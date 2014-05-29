@@ -1,2 +1,3 @@
-<h1>Pages#open</h1>
-<p>Find me in app/views/pages/open.html.erb</p>
+<% @pages.each do |page| %>
+  <%= page.tree %> <br/>
+<% end %>

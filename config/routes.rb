@@ -29,9 +29,11 @@ Weblog::Application.routes.draw do
 
   root to: 'pages#open'
 
-  get '*tree/add' => 'pages#add', constraints: AddConstraint.new
+  match 'add' => 'pages#add'
 
-  get '*tree/edit' => 'pages#edit', constraints: EditConstraint.new
+  match '*tree/add' => 'pages#add', constraints: AddConstraint.new
+
+  match '*tree/edit' => 'pages#edit', constraints: EditConstraint.new
 
   get '*tree' => 'pages#open', constraints: OpenConstraint.new
 
