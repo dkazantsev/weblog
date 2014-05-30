@@ -19,7 +19,7 @@ class PagesController < ApplicationController
     if request.post?
       page = Page.add(params[:name], @tree)
       redirect_to :back and return unless page
-      redirect_to page.uri
+      redirect_to URI.encode(page.uri)
     else
       @retpath = (params[:tree].present? ? "/#{params[:tree]}/add" : "/add")
     end
@@ -32,7 +32,7 @@ class PagesController < ApplicationController
     if request.post?
       page = @page.change_name(params[:name])
       redirect_to :back and return unless page
-      redirect_to page.uri
+      redirect_to URI.encode(page.uri)
     else  
       @retpath = "/#{params[:tree]}/edit"
     end
@@ -42,7 +42,7 @@ class PagesController < ApplicationController
   private
 
   def parse_tree
-    @tree = params[:tree].to_s.scan(/[\p{Alnum}_]+/).join('.')
+    @tree = params[:tree].to_s.scan(/[\p{Alnum}_]+/u).join('.')
   end
 
 end

@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from Page::BadRequest, with: :bad_request
   rescue_from Page::NotFound, with: :not_found
+  rescue_from Page::TreeTooLarge, with: :uri_too_large
   
 
   protected
@@ -14,5 +15,9 @@ class ApplicationController < ActionController::Base
 
   def not_found
     redirect_to '/404'
+  end
+
+  def uri_too_large
+    redirect_to '/414'
   end
 end

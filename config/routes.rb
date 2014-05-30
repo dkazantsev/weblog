@@ -1,5 +1,5 @@
 class PagesConstraint
-  TREE_REGEXP = (/^(\/[\p{Alnum}_]+)+$/u).freeze
+  TREE_REGEXP = (/\A(\/[\p{Alnum}_]+)+\z/u).freeze
 end
 
 class AddConstraint < PagesConstraint

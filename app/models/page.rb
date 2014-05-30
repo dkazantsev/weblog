@@ -4,6 +4,10 @@ class Page < ActiveRecord::Base
 
   validates_presence_of :tree
 
+  before_save do |page|
+    raise Page::TreeTooLarge if page.tree.length > 2047
+  end
+
   default_scope { order(:tree) }
 
 
@@ -19,6 +23,8 @@ class Page < ActiveRecord::Base
 
     page if page.save!
   rescue Page::BadRequest
+    raise $!
+  rescue Page::TreeTooLarge
     raise $!
   rescue
     nil
@@ -41,6 +47,8 @@ class Page < ActiveRecord::Base
     self.tree = buf.join('.')
 
     self if self.save!
+  rescue Page::TreeTooLarge
+    raise $!
   rescue
     nil
   end
@@ -49,7 +57,7 @@ class Page < ActiveRecord::Base
   private
 
   def self.is_name_valid?(name)
-    !!(name =~ /\A[\p{Alnum}_]+\z/)
+    !!(name =~ /\A[\p{Alnum}_]+\z/u)
   end
 
   def tree_array
@@ -61,3 +69,4 @@ end
 
 class Page::BadRequest < StandardError; end
 class Page::NotFound < StandardError; end
+class Page::TreeTooLarge < StandardError; end

@@ -3,5 +3,5 @@
 <% end %>
 
 <% @pages.each do |page| %>
-  <%= page.tree %> <br/>
+  <%= format_name_row(page.tree) %> <br/>
 <% end %>
