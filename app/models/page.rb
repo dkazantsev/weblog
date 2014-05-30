@@ -6,6 +6,7 @@ class Page < ActiveRecord::Base
 
   before_save do |page|
     raise Page::TreeTooLarge if page.tree.length > 2047
+    page.body = page.to_html
   end
 
   default_scope { order(:tree) }
@@ -54,6 +55,22 @@ class Page < ActiveRecord::Base
   end
 
 
+  protected
+
+  def to_html
+    # Remember: one slash escapes other one.
+    return nil unless self.source.present?
+    
+    text = self.source.dup
+
+    text = loop_sub(text, /\*{2}/, '<b>', '</b>')
+    text = loop_sub(text, /\\{2}/, '<i>', '</i>')
+    text = smart_sub(text, /\({2}/, /\){2}/, "<a href=\"<target>\">", "</a>")
+
+    text
+  end
+
+
   private
 
   def self.is_name_valid?(name)
@@ -62,6 +79,49 @@ class Page < ActiveRecord::Base
 
   def tree_array
     self.tree.split('.')
+  end
+
+  def loop_sub(text, regexp, open_tag, close_tag)
+    position = 0
+
+    loop do
+      open = text.index(regexp, position)
+      break unless open
+      position = open
+
+      text[open..open+1] = open_tag
+
+      close = text.index(regexp, position)
+      break unless close
+      position = close
+
+      text[close..close+1] = close_tag
+    end
+
+    text
+  end
+
+  def smart_sub(text, open_regexp, close_regexp, open_tag, close_tag)
+    position = 0
+
+    loop do
+      open = text.index(open_regexp, position)
+      break unless open
+      position = open
+
+      close = text.index(close_regexp, position)
+      break unless close
+      position = close
+
+      target = text[open+2...close].strip
+
+      buf = "#{open_tag}#{target}#{close_tag}"
+      buf.sub!('<target>', target)
+
+      text[open..close+1] = buf
+    end
+
+    text
   end
 
 end

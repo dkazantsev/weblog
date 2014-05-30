@@ -1,6 +1,19 @@
 <%= form_tag @retpath do %>
 
-  <input type="text" name="name" value="<%= @page.name %>"> <br/>
+  <label>Имя страницы</label> <br/>
+
+  <input type="text" name="name" value="<%= @page.name %>"> <br/><br/>
+
+
+  <label>Заголовок страницы</label> <br/>
+
+  <textarea name="label" cols="40" rows="2" maxlength="250"><%= @page.label %></textarea> <br/><br/>
+
+
+  <label>Текст</label> <br/>
+
+  <textarea name="source" cols="40" rows="4"><%= @page.source %></textarea> <br/><br/>
+
 
   <button type="submit">Обновить</button>
 

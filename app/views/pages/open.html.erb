@@ -1,6 +1,15 @@
 <% if @page %>
   <h1><%= @page.name %></h1>
+
+  <strong><%= @page.label %></strong>
+
+  <br/><br/>
+
+  <%= raw @page.body %>
+
+  <br/><br/>
 <% end %>
+
 
 <% @pages.each do |page| %>
   <%= format_name_row(page.tree) %> <br/>

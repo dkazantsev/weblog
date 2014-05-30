@@ -1,6 +1,19 @@
 <%= form_tag @retpath do %>
 
-  <input type="text" name="name"> <br/>
+  <label>Имя страницы</label> <br/>
+
+  <input type="text" name="name"> <br/><br/>
+
+
+  <label>Заголовок страницы</label> <br/>
+
+  <textarea name="label" cols="40" rows="2" maxlength="250"></textarea> <br/><br/>
+
+
+  <label>Текст</label> <br/>
+
+  <textarea name="source" cols="40" rows="4"></textarea> <br/><br/>
+  
 
   <button type="submit">Отправить</button>
 

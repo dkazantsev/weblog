@@ -3,7 +3,10 @@ class CreatePages < ActiveRecord::Migration
     execute <<-SQL
       CREATE TABLE pages (
         id serial PRIMARY KEY,
-        tree ltree UNIQUE
+        tree ltree UNIQUE,
+        label varchar(255),
+        source text,
+        body text
       );
 
       CREATE INDEX tree_gist_pages_idx ON pages USING GIST(tree);

@@ -17,3 +17,4 @@ end
 
 # gem 'unicorn'
 
+gem 'thin'
