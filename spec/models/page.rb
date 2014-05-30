@@ -23,8 +23,28 @@ describe 'Page' do
       Page.create!(tree: 'привет.е_бург.111').should be
     end
 
-     it "Should raise on empty URIs" do
+    it "Should raise on empty URIs" do
       expect { Page.create!(tree: '') }.to raise_error
+    end
+
+  end
+
+  context 'HTML converter' do
+
+    it "Should generate simple html" do
+      Page.new(source: "** hello ** \\\\ lol \\\\").send(:to_html).should eq("<b> hello </b> <i> lol </i>")
+    end
+
+  end
+
+  context 'Stuff' do
+
+    it "Should take right URI" do
+      Page.new(tree: '1.2.3.4').uri.shoud eq("/1/2/3/4/")
+    end
+
+    it "Should take right name" do
+      Page.new(tree: '1.2.3.4').name.shoud eq("4")
     end
 
   end
