@@ -1,2 +1,7 @@
-<h1>Pages#edit</h1>
-<p>Find me in app/views/pages/edit.html.erb</p>
+<%= form_tag @retpath do %>
+
+  <input type="text" name="name" value="<%= @page.name %>"> <br/>
+
+  <button type="submit">Обновить</button>
+
+<% end %>

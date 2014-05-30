@@ -1,3 +1,7 @@
+<% if @page %>
+  <h1><%= @page.name %></h1>
+<% end %>
+
 <% @pages.each do |page| %>
   <%= page.tree %> <br/>
 <% end %>
