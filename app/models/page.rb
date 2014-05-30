@@ -1,12 +1,15 @@
-class Page < ActiveRecord::Base
+#encoding: utf-8
 
-  require 'pry'
+class Page < ActiveRecord::Base
 
   validates_presence_of :tree
 
   before_save do |page|
+    # некоторые браузеры не поддерживают более 2083 символов в GET-запрсах
     raise Page::TreeTooLarge if page.tree.length > 2047
+    # имя не может быть больше 255 символов
     raise Page::LevelNameTooLarge if page.tree.split('.').last.length > 255
+    # делаем html из source, пишем в body
     page.body = page.to_html
   end
 
@@ -19,12 +22,15 @@ class Page < ActiveRecord::Base
     page = if parents.empty?
       Page.new(tree: name)
     else
+      # иногда родителей может не быть: хакеры всякие...
       raise Page::BadRequest if Page.where("tree ~ '#{parents}.*'").empty?
       Page.new(tree: "#{parents}.#{name}")
     end
 
     page if page.save!
   rescue Page::BadRequest
+    # не спрашивайте гугл что такое $!
+    # серьёзно
     raise $!
   rescue Page::TreeTooLarge
     raise $!
@@ -34,14 +40,18 @@ class Page < ActiveRecord::Base
 
 
   def uri
+    # образуем uri path
+    # я не соглсен с теми, кто считает что этому место - в хэлперах
     "/#{tree_array.join('/')}/"
   end
 
   def name
+    # читаем имя; хранится в дереве
     tree_array.last
   end
 
   def change_name(name)
+    # меняем имя через правку дерева
     return nil unless Page.is_name_valid?(name)
 
     buf = tree_array
@@ -83,6 +93,8 @@ class Page < ActiveRecord::Base
   end
 
   def loop_sub(text, regexp, open_tag, close_tag)
+    # простая замена вхождений на html-теги
+
     position = 0
 
     loop do
@@ -103,6 +115,9 @@ class Page < ActiveRecord::Base
   end
 
   def smart_sub(text, open_regexp, close_regexp, open_tag, close_tag)
+    # специфичная замена вхождений на html-теги
+    # ребята, извините, нормальный парсер - это не тема для тестового задания
+
     position = 0
 
     loop do
@@ -127,6 +142,7 @@ class Page < ActiveRecord::Base
 
 end
 
+# классы ошибок; для удобства
 
 class Page::BadRequest < StandardError; end
 class Page::NotFound < StandardError; end
