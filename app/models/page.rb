@@ -6,6 +6,7 @@ class Page < ActiveRecord::Base
 
   before_save do |page|
     raise Page::TreeTooLarge if page.tree.length > 2047
+    raise Page::LevelNameTooLarge if page.tree.split('.').last.length > 255
     page.body = page.to_html
   end
 
@@ -130,3 +131,4 @@ end
 class Page::BadRequest < StandardError; end
 class Page::NotFound < StandardError; end
 class Page::TreeTooLarge < StandardError; end
+class Page::LevelNameTooLarge < StandardError; end
